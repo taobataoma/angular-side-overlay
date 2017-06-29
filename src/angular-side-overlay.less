@@ -1,0 +1,26 @@
+
+.side-overlay {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+    position: fixed;
+    overflow: auto;
+    z-index: 999;
+    transition: all 0.3s ease-out;
+}
+
+.side-background {
+    background-color: #000;
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 998;
+}
+
+.side-visible {
+    /* csslint ignore:start */
+    transform: translateX(0) translateY(0) !important;
+    /* csslint ignore:end */
+}

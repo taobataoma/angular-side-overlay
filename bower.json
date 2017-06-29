@@ -1,0 +1,33 @@
+{
+  "name": "angular-side-overlay",
+  "version": "1.0.0",
+  "homepage": "https://github.com/taobataoma/angular-side-overlay",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/taobataoma/angular-side-overlay"
+  },
+  "authors": [
+    "taobataoma"
+  ],
+  "description": "Angular.js side overlay popup",
+  "main": [
+    "dist/angular-side-overlay.css",
+    "dist/angular-side-overlay.js"
+  ],
+  "keywords": [
+    "angular",
+    "side",
+    "overlay",
+    "popup"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo",
+    "build"
+  ]
+}
