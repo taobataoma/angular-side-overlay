@@ -1,0 +1,37 @@
+/**
+ * angular-side-overlay - angular side overlay component
+ * @author taobataoma
+ * @version v1.0.0
+ * @link https://github.com/taobataoma/angular-side-overlay#readme
+ * @license MIT
+ */
+.side-overlay
+{
+    position: fixed;
+    z-index: 999;
+
+    overflow: auto;
+
+    transition: all .3s ease-out;
+
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+}
+.side-background
+{
+    position: fixed;
+    z-index: 998;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    opacity: .5;
+    background-color: #000;
+}
+.side-visible
+{
+    /* csslint ignore:start */
+    transform: translateX(0) translateY(0) !important;
+    /* csslint ignore:end */
+}
