@@ -1,12 +1,12 @@
 /**
  * angular-side-overlay - angular side overlay component
  * @author taobataoma
- * @version v1.0.0
+ * @version v1.0.3
  * @link https://github.com/taobataoma/angular-side-overlay#readme
  * @license MIT
  */
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.1');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.3');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
@@ -37,7 +37,6 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
 
       if (evt && typeof evt.altKey !== "undefined") {
         evt.stopPropagation();
-        evt.preventDefault();
       }
     };
 
@@ -55,7 +54,6 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
 
       if (evt && typeof evt.altKey !== "undefined") {
         evt.stopPropagation();
-        evt.preventDefault();
       }
     };
 
@@ -190,7 +188,6 @@ function sideOverlay(sideCallbackEvent) {
     //sideOpened & sideClosed event
     element.bind('click', function (evt) {
       evt.stopPropagation();
-      evt.preventDefault();
     });
 
     //sideOpened & sideClosed event

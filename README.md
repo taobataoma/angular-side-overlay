@@ -40,7 +40,6 @@ Methods:
 tip: param `id` is the popup element id, if given `event` param, will auto run codes follow for you:
 ```javascript
     event.stopPropagation();
-    event.preventDefault();
 ```
 
 #### Directive: "side-overlay"
