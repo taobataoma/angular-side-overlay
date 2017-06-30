@@ -1,5 +1,5 @@
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.1');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.2');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
