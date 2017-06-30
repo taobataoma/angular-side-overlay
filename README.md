@@ -31,11 +31,78 @@ In your application, declare dependency injection like so..
 ```
 ## Service
 
-Module name: "ngSideOverlay"
+#### Service: "SideOverlay"
 
-Service: "SideOverlay"
+Methods:
+1. open(event, id, callback)
+1. close(event, id, callback)
 
-Directive: "side-overlay"
+tip: param `id` is the popup element id, if given `event` param, will auto run codes follow for you:
+```javascript
+    event.stopPropagation();
+    event.preventDefault();
+```
+
+#### Directive: "side-overlay"
+
+Values: `left, right, top, bottom`
+
+Attrs:
+1. `side-class`: user custom css class
+1. `side-modal`: if given this attr will popup of modal with a half opacity background
+1. `side-close-on-esc`: close popup when `ESC` keydown
+1. `side-close-on-outside-click`: close popup when outside click of the overlay
+1. `side-closed`: event occur when the popup is closed
+1. `side-opened`: event occur when the popup is opened
+
+
+## Example
+
+HTML code
+```html
+<style>
+    .popup-side-overlay {
+        top: 50px !important;
+        width: 450px;
+    }
+</style>
+...
+<button class="btn btn-default" onclick="openSideOverlay(event)">open</button>
+<button class="btn btn-default" onclick="closeSideOverlay(event)">close</button>
+...
+<div id="popupSlide"
+     side-overlay="right"
+     side-class="popup-side-overlay"
+     side-opened="onSideOpened()"
+     side-closeed="onSideCloseed()"
+     side-modal side-close-on-esc side-close-on-outside-click>
+    <div class="text-center">
+        <h2>Angular Side Overlay</h2>
+    </div>
+</div>
+```
+Controller code
+```javascript
+function openSideOverlay(evt){
+	SideOverlay.open(evt, 'popupSlide', function(){
+		console.log('open callback runned');
+	});
+}
+
+function closeSideOverlay(evt){
+	SideOverlay.close(evt, 'popupSlide', function(){
+		console.log('close callback runned');
+	});
+}
+
+function onSideOpened() {
+	console.log('side-opened runned');
+}
+
+function onSideClosed() {
+	console.log('side-closeed runned');
+}
+```
 
 ## License
 [The MIT License](LICENSE.md)
