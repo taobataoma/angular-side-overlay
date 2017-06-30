@@ -83,25 +83,34 @@ HTML code
 ```
 Controller code
 ```javascript
-function openSideOverlay(evt){
-	SideOverlay.open(evt, 'popupSlide', function(){
-		console.log('open callback runned');
-	});
-}
+  angular
+    .module('messages')
+    .controller('MessageController', MessageController);
 
-function closeSideOverlay(evt){
-	SideOverlay.close(evt, 'popupSlide', function(){
-		console.log('close callback runned');
-	});
-}
+  MessageController.$inject = ['SideOverlay'];
 
-function onSideOpened() {
-	console.log('side-opened runned');
-}
+  function MessageController(SideOverlay) {
 
-function onSideClosed() {
-	console.log('side-closeed runned');
-}
+    function openSideOverlay(evt){
+        SideOverlay.open(evt, 'popupSlide', function(){
+            console.log('open callback runned');
+        });
+    }
+
+    function closeSideOverlay(evt){
+        SideOverlay.close(evt, 'popupSlide', function(){
+            console.log('close callback runned');
+        });
+    }
+
+    function onSideOpened() {
+        console.log('side-opened runned');
+    }
+
+    function onSideClosed() {
+        console.log('side-closeed runned');
+    }
+  }
 ```
 ## Online support
 - Post an [issue](https://github.com/taobataoma/angular-side-overlay/issues)
