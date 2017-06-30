@@ -6,7 +6,7 @@
  * @license MIT
  */
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.0');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.1');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
@@ -19,7 +19,7 @@ angular.module('ngSideOverlay').value('sideCallbackEvent', [
 angular.module('ngSideOverlay').provider('SideOverlay', function () {
   this.$get = ["sideCallbackEvent", function (sideCallbackEvent) {
     //method open
-    var open = function (id, cb) {
+    var open = function (evt, id, cb) {
       if (!id) {
         return;
       }
@@ -34,10 +34,15 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       if (bg) {
         bg.css('display', 'block');
       }
+
+      if (evt && typeof evt.altKey !== "undefined") {
+        evt.stopPropagation();
+        evt.preventDefault();
+      }
     };
 
     //method close
-    var close = function (id, cb) {
+    var close = function (evt, id, cb) {
       if (!id) {
         return;
       }
@@ -46,6 +51,11 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       var e = angular.element(document.getElementById(id));
       if (e.hasClass('side-visible')) {
         e.removeClass('side-visible');
+      }
+
+      if (evt && typeof evt.altKey !== "undefined") {
+        evt.stopPropagation();
+        evt.preventDefault();
       }
     };
 
@@ -88,8 +98,7 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       close: close
     };
   }];
-})
-;
+});
 
 angular.module('ngSideOverlay').directive('sideOverlay', sideOverlay);
 sideOverlay.$inject = ['sideCallbackEvent'];
@@ -139,12 +148,23 @@ function sideOverlay(sideCallbackEvent) {
       }
     });
 
-    //overlay class
+    //sideModal
     scope.$watch(attrs.sideModal, function (s) {
       if (attrs.hasOwnProperty('sideModal')) {
         var id = 'sideBackground_' + element.attr('id');
         var be = angular.element('<div id="' + id + '" class="side-background" style="display: none;"></div>');
         angular.element(document.getElementsByTagName('body')).append(be);
+      }
+    });
+
+    //sideCloseOnOutsideClick
+    scope.$watch(attrs.sideCloseOnOutsideClick, function (s) {
+      if (attrs.hasOwnProperty('sideCloseOnOutsideClick')) {
+        $(document.body).on('click', function (e) {
+          if (element.hasClass('side-visible')) {
+            element.removeClass('side-visible');
+          }
+        });
       }
     });
 
@@ -155,7 +175,7 @@ function sideOverlay(sideCallbackEvent) {
       }
     });
 
-    //document keydown
+    //document keydown (ESC close)
     scope.$watch(attrs.sideCloseOnEsc, function (s) {
       if (attrs.hasOwnProperty('sideCloseOnEsc')) {
         $(document).on('keydown', function (e) {
@@ -167,8 +187,13 @@ function sideOverlay(sideCallbackEvent) {
         });
       }
     });
+    //sideOpened & sideClosed event
+    element.bind('click', function (evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    });
 
-    //sideOpened & sideClosed
+    //sideOpened & sideClosed event
     element.bind('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', function (evt) {
       var e = angular.element(evt.target);
       var bg = $('#sideBackground_' + element.attr('id'));

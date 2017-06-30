@@ -1,9 +1,10 @@
 {
   "name": "angular-side-overlay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "angular side overlay component",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",
