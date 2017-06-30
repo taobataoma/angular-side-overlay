@@ -74,7 +74,7 @@ HTML code
      side-overlay="right"
      side-class="popup-side-overlay"
      side-opened="onSideOpened()"
-     side-closeed="onSideCloseed()"
+     side-closeed="onSideClosed()"
      side-modal side-close-on-esc side-close-on-outside-click>
     <div class="text-center">
         <h2>Angular Side Overlay</h2>
@@ -103,6 +103,10 @@ function onSideClosed() {
 	console.log('side-closeed runned');
 }
 ```
+## Online support
+- Post an [issue](https://github.com/taobataoma/angular-side-overlay/issues)
+- Email to [taobataoma](mailto:taobataoma@gmail.com)
+- Join [QQ](http://im.qq.com/) Group: 291843550
 
 ## License
 [The MIT License](LICENSE.md)
