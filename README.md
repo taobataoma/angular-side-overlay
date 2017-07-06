@@ -1,6 +1,9 @@
 # angular-side-overlay
 angular-side-overlay is a component of angular 1, it can popup a overlay from the optional side, support opened &amp; closed method, and auto close when  ESC keydown, and modal options, and close on outside click options.
 
+## Screenshot
+![messages_box](https://user-images.githubusercontent.com/7778550/27896316-cd97a720-624b-11e7-9271-37fdf12a9be6.jpg)
+
 ## Install
 To install the package using bower and save as a dependency use...
 ```bash
