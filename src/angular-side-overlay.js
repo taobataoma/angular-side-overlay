@@ -1,35 +1,43 @@
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.0.3');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.1.0');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
     isOpened: false,
     openCallback: undefined,
-    closeCallback: undefined
+    closeCallback: undefined,
+    position: 'right'
   }
 ]);
 
 angular.module('ngSideOverlay').provider('SideOverlay', function () {
-  this.$get = function (sideCallbackEvent) {
+  this.$get = ["sideCallbackEvent", function (sideCallbackEvent) {
     //method open
     var open = function (evt, id, cb) {
       if (!id) {
         return;
       }
-      addSide(id, true, cb, null);
 
-      var e = angular.element(document.getElementById(id));
-      if (!e.hasClass('side-visible')) {
-        e.addClass('side-visible');
-      }
+      var sideEvent = getSideEvent(id);
+      if (sideEvent) {
+        sideEvent.isOpened = true;
+        sideEvent.openCallback = cb;
+        sideEvent.closeCallback = null;
 
-      var bg = $('#sideBackground_' + id);
-      if (bg) {
-        bg.css('display', 'block');
-      }
+        var e = angular.element(document.getElementById(id));
+        var c = 'side-visible' + '-' + sideEvent.position;
+        if (!e.hasClass(c)) {
+          e.addClass(c);
+        }
 
-      if (evt && typeof evt.altKey !== "undefined") {
-        evt.stopPropagation();
+        var bg = $('#sideBackground_' + id);
+        if (bg) {
+          bg.css('display', 'block');
+        }
+
+        if (evt && typeof evt.altKey !== "undefined") {
+          evt.stopPropagation();
+        }
       }
     };
 
@@ -38,15 +46,22 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       if (!id) {
         return;
       }
-      addSide(id, false, null, cb);
 
-      var e = angular.element(document.getElementById(id));
-      if (e.hasClass('side-visible')) {
-        e.removeClass('side-visible');
-      }
+      var sideEvent = getSideEvent(id);
+      if (sideEvent) {
+        sideEvent.isOpened = false;
+        sideEvent.openCallback = null;
+        sideEvent.closeCallback = cb;
 
-      if (evt && typeof evt.altKey !== "undefined") {
-        evt.stopPropagation();
+        var e = angular.element(document.getElementById(id));
+        var c = 'side-visible' + '-' + sideEvent.position;
+        if (e.hasClass(c)) {
+          e.removeClass(c);
+        }
+
+        if (evt && typeof evt.altKey !== "undefined") {
+          evt.stopPropagation();
+        }
       }
     };
 
@@ -61,26 +76,14 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       return status;
     };
 
-    //add side
-    function addSide(id, status, openc, closec) {
-      var side = null;
+    function getSideEvent(id) {
+      var ele = null;
       angular.forEach(sideCallbackEvent, function (e) {
         if (e.id === id) {
-          side = e;
-          e.isOpened = status;
-          e.openCallback = openc;
-          e.closeCallback = closec;
+          ele = e;
         }
       });
-      if (side === null) {
-        sideCallbackEvent.push({
-            id: id,
-            isOpened: status,
-            openCallback: openc,
-            closeCallback: closec
-          }
-        );
-      }
+      return ele;
     }
 
     return {
@@ -88,7 +91,7 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
       open: open,
       close: close
     };
-  };
+  }];
 });
 
 angular.module('ngSideOverlay').directive('sideOverlay', sideOverlay);
@@ -104,39 +107,57 @@ function sideOverlay(sideCallbackEvent) {
   function link(scope, element, attrs) {
     element.addClass('side-overlay');
 
+    addSideEvent(element.attr('id'));
+    var sideEvent = getSideEvent(element.attr('id'));
+    var visibleClass = 'side-visible-right';
+    var sideClassDefault = 'side-class-default-right';
+
     scope.$watch(attrs.sideOverlay, function (s) {
-      switch (attrs.sideOverlay) {
-        case 'left':
-          element.css('top', '0');
-          element.css('bottom', '0');
-          element.css('left', '0');
-          element.css('transform', 'translateX(-101%) translateY(0)');
-          break;
-        case 'right':
-          element.css('top', '0');
-          element.css('bottom', '0');
-          element.css('right', '0');
-          element.css('transform', 'translateX(101%) translateY(0)');
-          break;
-        case 'top':
-          element.css('left', '0');
-          element.css('right', '0');
-          element.css('top', '0');
-          element.css('transform', 'translateX(0) translateY(-101%)');
-          break;
-        case 'bottom':
-          element.css('left', '0');
-          element.css('right', '0');
-          element.css('bottom', '0');
-          element.css('transform', 'translateX(0) translateY(101%)');
-          break;
-        default:
-          element.css('top', '0');
-          element.css('bottom', '0');
-          element.css('right', '0');
-          element.css('transform', 'translateX(101%) translateY(0)');
-          break;
+      sideEvent.position = attrs.sideOverlay;
+      visibleClass = 'side-visible' + '-' + sideEvent.position;
+      sideClassDefault = 'side-class-default' + '-' + sideEvent.position;
+
+      function initSideOverlay(v) {
+        var w = element.prop('clientWidth') * 1.01;
+        var h = element.prop('clientHeight') * 1.01;
+        switch (sideEvent.position) {
+          case 'left':
+            element.css('top', '0');
+            element.css('bottom', '0');
+            element.css('left', '-' + w + 'px');
+            break;
+          case 'right':
+            element.css('top', '0');
+            element.css('bottom', '0');
+            element.css('right', '-' + w + 'px');
+            break;
+          case 'top':
+            element.css('left', '0');
+            element.css('right', '0');
+            element.css('top', '-' + h + 'px');
+            break;
+          case 'bottom':
+            element.css('left', '0');
+            element.css('right', '0');
+            element.css('bottom', '-' + h + 'px');
+            break;
+          default:
+            element.css('top', '0');
+            element.css('bottom', '0');
+            element.css('right', '-' + w + 'px');
+            break;
+        }
       }
+
+      //overlay class
+      scope.$watch(attrs.sideClass, function (s) {
+        if (attrs.sideClass) {
+          element.addClass(attrs.sideClass);
+        } else {
+          element.addClass(sideClassDefault);
+        }
+        initSideOverlay();
+      });
     });
 
     //sideModal
@@ -152,17 +173,10 @@ function sideOverlay(sideCallbackEvent) {
     scope.$watch(attrs.sideCloseOnOutsideClick, function (s) {
       if (attrs.hasOwnProperty('sideCloseOnOutsideClick')) {
         $(document.body).on('click', function (e) {
-          if (element.hasClass('side-visible')) {
-            element.removeClass('side-visible');
+          if (element.hasClass(visibleClass)) {
+            element.removeClass(visibleClass);
           }
         });
-      }
-    });
-
-    //overlay class
-    scope.$watch(attrs.sideClass, function (s) {
-      if (attrs.sideClass) {
-        element.addClass(attrs.sideClass);
       }
     });
 
@@ -171,13 +185,14 @@ function sideOverlay(sideCallbackEvent) {
       if (attrs.hasOwnProperty('sideCloseOnEsc')) {
         $(document).on('keydown', function (e) {
           if (e.keyCode === 27) { // ESC
-            if (element.hasClass('side-visible')) {
-              element.removeClass('side-visible');
+            if (element.hasClass(visibleClass)) {
+              element.removeClass(visibleClass);
             }
           }
         });
       }
     });
+
     //sideOpened & sideClosed event
     element.bind('click', function (evt) {
       evt.stopPropagation();
@@ -185,12 +200,9 @@ function sideOverlay(sideCallbackEvent) {
 
     //sideOpened & sideClosed event
     element.bind('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', function (evt) {
-      var e = angular.element(evt.target);
       var bg = $('#sideBackground_' + element.attr('id'));
-      var sideEvent = getSideEvent(e.attr('id'));
-
-      if (sideEvent) {
-        if (!e.hasClass('side-visible')) {
+      if (sideEvent && evt.target.id === sideEvent.id) {
+        if (!element.hasClass(visibleClass)) {
           if (bg) {
             bg.css('display', 'none');
           }
@@ -217,6 +229,11 @@ function sideOverlay(sideCallbackEvent) {
       }
     });
 
+    /**
+     * getSideEvent
+     * @param id
+     * @returns {*}
+     */
     function getSideEvent(id) {
       var ele = null;
       angular.forEach(sideCallbackEvent, function (e) {
@@ -225,6 +242,23 @@ function sideOverlay(sideCallbackEvent) {
         }
       });
       return ele;
+    }
+
+    /**
+     * addSideEvent
+     * @param id
+     */
+    function addSideEvent(id) {
+      if (!getSideEvent(id)) {
+        sideCallbackEvent.push({
+            id: id,
+            isOpened: false,
+            position: 'right',
+            openCallback: null,
+            closeCallback: null
+          }
+        );
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 /**
  * angular-side-overlay - angular side overlay component
  * @author taobataoma
- * @version v1.0.3
+ * @version v1.1.0
  * @link https://github.com/taobataoma/angular-side-overlay#readme
  * @license MIT
  */
@@ -29,9 +29,63 @@
     opacity: .5;
     background-color: #000;
 }
-.side-visible
+.side-visible-left
 {
     /* csslint ignore:start */
-    transform: translateX(0) translateY(0) !important;
+    transform: translateX(101%) translateY(0) !important;
     /* csslint ignore:end */
+}
+.side-visible-right
+{
+    /* csslint ignore:start */
+    transform: translateX(-101%) translateY(0) !important;
+    /* csslint ignore:end */
+}
+.side-visible-top
+{
+    /* csslint ignore:start */
+    transform: translateX(0) translateY(101%) !important;
+    /* csslint ignore:end */
+}
+.side-visible-bottom
+{
+    /* csslint ignore:start */
+    transform: translateX(0) translateY(-101%) !important;
+    /* csslint ignore:end */
+}
+@media (min-width: 768px)
+{
+    .side-class-default-left
+    {
+        width: 450px;
+    }
+}
+@media (max-width: 767px)
+{
+    .side-class-default-left
+    {
+        width: calc(100% - 50px);
+    }
+}
+@media (min-width: 768px)
+{
+    .side-class-default-right
+    {
+        width: 450px;
+    }
+}
+@media (max-width: 767px)
+{
+    .side-class-default-right
+    {
+        width: calc(100% - 50px);
+    }
+}
+.side-class-default-top
+{
+    max-height: 50%;
+}
+.side-class-default-bottom
+{
+    max-height: 50%;
 }
