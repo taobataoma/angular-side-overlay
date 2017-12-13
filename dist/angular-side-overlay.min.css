@@ -1,7 +1,7 @@
 /**
  * angular-side-overlay - angular side overlay component
  * @author taobataoma
- * @version v1.1.1
+ * @version v1.1.2
  * @link https://github.com/taobataoma/angular-side-overlay#readme
  * @license MIT
  */
