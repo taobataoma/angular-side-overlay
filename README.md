@@ -54,9 +54,13 @@ Attrs:
 1. `side-modal`: if given this attr will popup of modal with a half opacity background
 1. `side-close-on-esc`: close popup when `ESC` keydown
 1. `side-close-on-outside-click`: close popup when outside click of the overlay
-1. `side-closed`: event occur when the popup is closed
-1. `side-opened`: event occur when the popup is opened
+1. `side-closed`: function, event occur when the popup is closed
+1. `side-opened`: function, event occur when the popup is opened
+1. `side-status`: value, set open or close status value for popup, if true, open the popup, if false, close the popup
 
+## Two ways to open or close popup
+1. Use the methods `open` or `close`
+1. Set `side-status` attr to `true/false/variable`
 
 ## Example
 
@@ -77,6 +81,7 @@ HTML code
      side-class="popup-side-overlay"
      side-opened="onSideOpened()"
      side-closeed="onSideClosed()"
+     side-status="sideStatus"
      side-modal side-close-on-esc side-close-on-outside-click>
     <div class="text-center">
         <h2>Angular Side Overlay</h2>
@@ -89,9 +94,17 @@ Controller code
     .module('messages')
     .controller('MessageController', MessageController);
 
-  MessageController.$inject = ['SideOverlay'];
+  MessageController.$inject = ['SideOverlay', '$timeout'];
 
-  function MessageController(SideOverlay) {
+  function MessageController(SideOverlay, $timeout) {
+
+    $timeout(function () {
+      $scope.popupStatus = true;
+    }, 3000);
+
+    $timeout(function () {
+      $scope.popupStatus = false;
+    }, 6000);
 
     function openSideOverlay(evt){
         SideOverlay.open(evt, 'popupSlide', function(){
@@ -114,6 +127,7 @@ Controller code
     }
   }
 ```
+
 ## Online support
 - Post an [issue](https://github.com/taobataoma/angular-side-overlay/issues)
 - Email to [taobataoma](mailto:taobataoma@gmail.com)

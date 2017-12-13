@@ -1,12 +1,12 @@
 /**
  * angular-side-overlay - angular side overlay component
  * @author taobataoma
- * @version v1.1.0
+ * @version v1.1.1
  * @link https://github.com/taobataoma/angular-side-overlay#readme
  * @license MIT
  */
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.1.0');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.1.1');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
@@ -27,14 +27,12 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
 
       var sideEvent = getSideEvent(id);
       if (sideEvent) {
-        sideEvent.isOpened = true;
         sideEvent.openCallback = cb;
         sideEvent.closeCallback = null;
 
         var e = angular.element(document.getElementById(id));
-        var c = 'side-visible' + '-' + sideEvent.position;
-        if (!e.hasClass(c)) {
-          e.addClass(c);
+        if (!e.hasClass('side-visible')) {
+          e.addClass('side-visible');
         }
 
         var bg = $('#sideBackground_' + id);
@@ -56,14 +54,12 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
 
       var sideEvent = getSideEvent(id);
       if (sideEvent) {
-        sideEvent.isOpened = false;
         sideEvent.openCallback = null;
         sideEvent.closeCallback = cb;
 
         var e = angular.element(document.getElementById(id));
-        var c = 'side-visible' + '-' + sideEvent.position;
-        if (e.hasClass(c)) {
-          e.removeClass(c);
+        if (e.hasClass('side-visible')) {
+          e.removeClass('side-visible');
         }
 
         if (evt && typeof evt.altKey !== "undefined") {
@@ -102,8 +98,8 @@ angular.module('ngSideOverlay').provider('SideOverlay', function () {
 });
 
 angular.module('ngSideOverlay').directive('sideOverlay', sideOverlay);
-sideOverlay.$inject = ['sideCallbackEvent'];
-function sideOverlay(sideCallbackEvent) {
+sideOverlay.$inject = ['sideCallbackEvent', 'SideOverlay', '$timeout'];
+function sideOverlay(sideCallbackEvent, SideOverlay, $timeout) {
   var directive = {
     restrict: 'A',
     link: link
@@ -116,55 +112,56 @@ function sideOverlay(sideCallbackEvent) {
 
     addSideEvent(element.attr('id'));
     var sideEvent = getSideEvent(element.attr('id'));
-    var visibleClass = 'side-visible-right';
     var sideClassDefault = 'side-class-default-right';
 
     scope.$watch(attrs.sideOverlay, function (s) {
       sideEvent.position = attrs.sideOverlay;
-      visibleClass = 'side-visible' + '-' + sideEvent.position;
       sideClassDefault = 'side-class-default' + '-' + sideEvent.position;
+      element.addClass(sideClassDefault);
 
-      function initSideOverlay(v) {
-        var w = element.prop('clientWidth') * 1.01;
-        var h = element.prop('clientHeight') * 1.01;
-        switch (sideEvent.position) {
-          case 'left':
-            element.css('top', '0');
-            element.css('bottom', '0');
-            element.css('left', '-' + w + 'px');
-            break;
-          case 'right':
-            element.css('top', '0');
-            element.css('bottom', '0');
-            element.css('right', '-' + w + 'px');
-            break;
-          case 'top':
-            element.css('left', '0');
-            element.css('right', '0');
-            element.css('top', '-' + h + 'px');
-            break;
-          case 'bottom':
-            element.css('left', '0');
-            element.css('right', '0');
-            element.css('bottom', '-' + h + 'px');
-            break;
-          default:
-            element.css('top', '0');
-            element.css('bottom', '0');
-            element.css('right', '-' + w + 'px');
-            break;
-        }
+      switch (sideEvent.position) {
+        case 'left':
+          element.css('top', '0');
+          element.css('bottom', '0');
+          element.css('left', '0');
+          element.css('transform', 'translateX(-101%) translateY(0)');
+          break;
+        case 'right':
+          element.css('top', '0');
+          element.css('bottom', '0');
+          element.css('right', '0');
+          element.css('transform', 'translateX(101%) translateY(0)');
+          break;
+        case 'top':
+          element.css('left', '0');
+          element.css('right', '0');
+          element.css('top', '0');
+          element.css('transform', 'translateX(0) translateY(-101%)');
+          break;
+        case 'bottom':
+          element.css('left', '0');
+          element.css('right', '0');
+          element.css('bottom', '0');
+          element.css('transform', 'translateX(0) translateY(101%)');
+          break;
+        default:
+          element.css('top', '0');
+          element.css('bottom', '0');
+          element.css('right', '0');
+          element.css('transform', 'translateX(101%) translateY(0)');
+          break;
       }
 
-      //overlay class
-      scope.$watch(attrs.sideClass, function (s) {
-        if (attrs.sideClass) {
-          element.addClass(attrs.sideClass);
-        } else {
-          element.addClass(sideClassDefault);
-        }
-        initSideOverlay();
-      });
+      $timeout(function () {
+        element.css('transition', 'all .3s ease-out');
+      }, 100);
+    });
+
+    //overlay class
+    scope.$watch(attrs.sideClass, function (s) {
+      if (attrs.sideClass) {
+        element.addClass(attrs.sideClass);
+      }
     });
 
     //sideModal
@@ -176,12 +173,23 @@ function sideOverlay(sideCallbackEvent) {
       }
     });
 
+    //sideStatus
+    scope.$watch(attrs.sideStatus, function (s) {
+      if (attrs.hasOwnProperty('sideStatus')) {
+        if (s) {
+          SideOverlay.open(null, sideEvent.id, null);
+        } else {
+          SideOverlay.close(null, sideEvent.id, null);
+        }
+      }
+    });
+
     //sideCloseOnOutsideClick
     scope.$watch(attrs.sideCloseOnOutsideClick, function (s) {
       if (attrs.hasOwnProperty('sideCloseOnOutsideClick')) {
         $(document.body).on('click', function (e) {
-          if (element.hasClass(visibleClass)) {
-            element.removeClass(visibleClass);
+          if (element.hasClass('side-visible')) {
+            element.removeClass('side-visible');
           }
         });
       }
@@ -192,8 +200,8 @@ function sideOverlay(sideCallbackEvent) {
       if (attrs.hasOwnProperty('sideCloseOnEsc')) {
         $(document).on('keydown', function (e) {
           if (e.keyCode === 27) { // ESC
-            if (element.hasClass(visibleClass)) {
-              element.removeClass(visibleClass);
+            if (element.hasClass('side-visible')) {
+              element.removeClass('side-visible');
             }
           }
         });
@@ -209,29 +217,33 @@ function sideOverlay(sideCallbackEvent) {
     element.bind('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', function (evt) {
       var bg = $('#sideBackground_' + element.attr('id'));
       if (sideEvent && evt.target.id === sideEvent.id) {
-        if (!element.hasClass(visibleClass)) {
+        if (!element.hasClass('side-visible')) {
           if (bg) {
             bg.css('display', 'none');
           }
-          sideEvent.isOpened = false;
           if (typeof sideEvent.closeCallback === 'function') {
             scope.$apply(function () {
               sideEvent.closeCallback();
             });
           }
           scope.$apply(function () {
-            scope.$eval(attrs.sideClosed);
+            if (sideEvent.isOpened) {
+              scope.$eval(attrs.sideClosed);
+            }
           });
+          sideEvent.isOpened = false;
         } else {
-          sideEvent.isOpened = true;
           if (typeof sideEvent.openCallback === 'function') {
             scope.$apply(function () {
               sideEvent.openCallback();
             });
           }
           scope.$apply(function () {
-            scope.$eval(attrs.sideOpened);
+            if (!sideEvent.isOpened) {
+              scope.$eval(attrs.sideOpened);
+            }
           });
+          sideEvent.isOpened = true;
         }
       }
     });

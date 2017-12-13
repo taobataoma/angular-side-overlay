@@ -1,7 +1,7 @@
 /**
  * angular-side-overlay - angular side overlay component
  * @author taobataoma
- * @version v1.1.0
+ * @version v1.1.1
  * @link https://github.com/taobataoma/angular-side-overlay#readme
  * @license MIT
  */
@@ -11,8 +11,6 @@
     z-index: 999;
 
     overflow: auto;
-
-    transition: all .3s ease-out;
 
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, .3);
@@ -29,63 +27,25 @@
     opacity: .5;
     background-color: #000;
 }
-.side-visible-left
+.side-visible
 {
     /* csslint ignore:start */
-    transform: translateX(101%) translateY(0) !important;
+    transform: translateX(0) translateY(0) !important;
     /* csslint ignore:end */
 }
-.side-visible-right
+.side-class-default-left
 {
-    /* csslint ignore:start */
-    transform: translateX(-101%) translateY(0) !important;
-    /* csslint ignore:end */
+    max-width: calc(100% - 50px);
 }
-.side-visible-top
+.side-class-default-right
 {
-    /* csslint ignore:start */
-    transform: translateX(0) translateY(101%) !important;
-    /* csslint ignore:end */
-}
-.side-visible-bottom
-{
-    /* csslint ignore:start */
-    transform: translateX(0) translateY(-101%) !important;
-    /* csslint ignore:end */
-}
-@media (min-width: 768px)
-{
-    .side-class-default-left
-    {
-        width: 450px;
-    }
-}
-@media (max-width: 767px)
-{
-    .side-class-default-left
-    {
-        width: calc(100% - 50px);
-    }
-}
-@media (min-width: 768px)
-{
-    .side-class-default-right
-    {
-        width: 450px;
-    }
-}
-@media (max-width: 767px)
-{
-    .side-class-default-right
-    {
-        width: calc(100% - 50px);
-    }
+    max-width: calc(100% - 50px);
 }
 .side-class-default-top
 {
-    max-height: 50%;
+    max-height: calc(100% - 50px);
 }
 .side-class-default-bottom
 {
-    max-height: 50%;
+    max-height: calc(100% - 50px);
 }
