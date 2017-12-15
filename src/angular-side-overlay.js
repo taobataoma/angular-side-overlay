@@ -1,5 +1,5 @@
 angular.module('ngSideOverlay', []);
-angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.1.3');
+angular.module('ngSideOverlay').constant('MODULE_VERSION', '1.1.4');
 angular.module('ngSideOverlay').value('sideCallbackEvent', [
   {
     id: undefined,
@@ -227,6 +227,7 @@ function sideOverlay(sideCallbackEvent, SideOverlay, $timeout) {
             }
           });
           sideEvent.isOpened = false;
+          $(document.body).focus();
         } else {
           if (typeof sideEvent.openCallback === 'function') {
             scope.$apply(function () {
